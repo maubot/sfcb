@@ -1,0 +1,10 @@
+maubot: 0.1.0
+id: xyz.maubot.sfcb
+version: 1.0.0
+license: AGPL-3.0-or-later
+modules:
+- sfcb
+main_class: SwitchFriendCodeBot
+extra_files:
+- widget.html.j2
+webapp: true

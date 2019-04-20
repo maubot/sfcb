@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Friend codes</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Friend code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_id, friend_code in codes.items() %}
+                <tr>
+                    <th>{{ user_id }}</th>
+                    <th>SW-{{ friend_code }}</th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
