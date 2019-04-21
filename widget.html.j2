@@ -57,7 +57,7 @@
             background-color: white;
 
             position: relative;
-            left: -2px;
+            left: -3px;
             top: 2px;
             border: none;
             max-width: 100%;
@@ -71,8 +71,14 @@
             user-select: text;
         }
 
+        .code > span:first-of-type::before {
+            content: "SW-";
+            color: #666;
+        }
+
         .code > span:not(:last-of-type)::after {
-            content: "-"
+            content: "-";
+            color: #666;
         }
     </style>
 </head>

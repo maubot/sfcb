@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
-from typing import Dict, List, NamedTuple, Pattern
+from typing import Dict, List, NamedTuple, Pattern, Any
 from pkg_resources import resource_string
 import re
 import asyncio
@@ -22,6 +22,7 @@ import json
 from aiohttp import web
 from jinja2 import Template
 
+from mautrix.client import Client
 from mautrix.types import RoomID, UserID, StateEvent, EventType
 from mautrix.errors import MNotFound
 
@@ -99,7 +100,7 @@ class SwitchFriendCodeBot(Plugin):
     async def set_code(self, evt: MessageEvent, code: str) -> None:
         match = self.code_regex.fullmatch(code)
         try:
-            data = [int(match.group(1)),int(match.group(2)), int(match.group(3))]
+            data = [int(match.group(1)), int(match.group(2)), int(match.group(3))]
         except (AttributeError, IndexError, ValueError):
             await evt.reply("That does not look like a valid Switch friend code")
             return
@@ -110,10 +111,33 @@ class SwitchFriendCodeBot(Plugin):
                                            content=cache)
         await evt.mark_read()
 
+    @staticmethod
+    def _validate_code(arr: Any) -> bool:
+        if not isinstance(arr, list) or len(arr) != 3:
+            return False
+        for item in arr:
+            if not isinstance(item, int) or not 0 <= item <= 9999:
+                return False
+        return True
+
+    @staticmethod
+    def _validate_user(user: Any) -> bool:
+        try:
+            Client.parse_mxid(user)
+            return True
+        except (ValueError, IndexError):
+            return False
+
     @event.on(STATE_SWITCH_FRIEND_CODES)
     async def handle_code(self, evt: StateEvent) -> None:
+        if evt.state_key != "":
+            return
         async with self._lock(evt.room_id):
-            self.cache[evt.room_id] = evt.content.serialize()
+            self.cache[evt.room_id] = {
+                user_id: code
+                for user_id, code in evt.content.serialize()
+                if self._validate_user(user_id) and self._validate_code(code)
+            }
 
     @event.on(EventType.ROOM_MEMBER)
     async def handle_membership(self, evt: StateEvent) -> None:
