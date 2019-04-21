@@ -3,23 +3,77 @@
 <head>
     <title>Friend codes</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body {
+            background-color: white;
+        }
+
+        th {
+            padding: .2rem .5rem;
+        }
+
+        tbody th {
+            font-weight: normal;
+        }
+
+        .pill {
+            color: #2E2F32;
+            background-color: rgba(0, 0, 0, 0.1);
+
+            cursor: pointer;
+
+            text-decoration: none;
+            padding: 0 5px;
+            border-radius: 16px;
+            line-height: 20px;
+            height: 20px;
+        }
+
+        .pill > img {
+            border-radius: 100%;
+            vertical-align: top;
+            background-color: white;
+
+            position: relative;
+            left: -2px;
+            top: 2px;
+            border: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-    <table>
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Friend code</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user_id, friend_code in codes.items() %}
-                <tr>
-                    <th>{{ user_id }}</th>
-                    <th>SW-{{ friend_code }}</th>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table>
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Friend code</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user_id, friend_code in codes.items() %}
+        <tr>
+            <th>
+                <span title="{{ user_id }}" class="pill">
+                    <img src="{{ get_url(profiles[user_id].avatar_url) }}"
+                         height="16" width="16" alt=""/>
+                    {{ profiles[user_id].displayname }}
+                </span>
+            </th>
+            <th>
+                {{
+                    "%04d" | format(friend_code[0])
+                }}-{{
+                    "%04d" | format(friend_code[1])
+                }}-{{
+                    "%04d" | format(friend_code[2])
+                }}
+            </th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>
