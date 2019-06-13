@@ -123,7 +123,7 @@ class SwitchFriendCodeBot(Plugin):
     @staticmethod
     def _validate_user(user: Any) -> bool:
         try:
-            Client.parse_mxid(user)
+            Client.parse_user_id(user)
             return True
         except (ValueError, IndexError):
             return False
@@ -135,7 +135,7 @@ class SwitchFriendCodeBot(Plugin):
         async with self._lock(evt.room_id):
             self.cache[evt.room_id] = {
                 user_id: code
-                for user_id, code in evt.content.serialize()
+                for user_id, code in evt.content.serialize().items()
                 if self._validate_user(user_id) and self._validate_code(code)
             }
 
@@ -146,6 +146,8 @@ class SwitchFriendCodeBot(Plugin):
                 displayname=evt.content.displayname, avatar_url=evt.content.avatar_url)
 
     def _get_download_url(self, mxc: str) -> str:
+        if not mxc:
+            return "https://matrix.maunium.net/img/368bd6.2349bd1.png"
         return (f"{self.client.api.base_url}/_matrix/media/r0/thumbnail/{mxc[6:]}"
                 f"?width=16&height=16&method=crop")
 
