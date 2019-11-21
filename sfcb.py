@@ -142,7 +142,7 @@ class SwitchFriendCodeBot(Plugin):
     @event.on(EventType.ROOM_MEMBER)
     async def handle_membership(self, evt: StateEvent) -> None:
         async with self._lock(evt.room_id):
-            self.profiles[evt.room_id][UserID(evt.state_key)] = Profile(
+            self.profiles.setdefault(evt.room_id, {})[UserID(evt.state_key)] = Profile(
                 displayname=evt.content.displayname, avatar_url=evt.content.avatar_url)
 
     def _get_download_url(self, mxc: str) -> str:
