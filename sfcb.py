@@ -147,8 +147,8 @@ class SwitchFriendCodeBot(Plugin):
 
     def _get_download_url(self, mxc: str) -> str:
         if not mxc:
-            return "https://matrix.maunium.net/img/368bd6.2349bd1.png"
-        return (f"{self.client.api.base_url}/_matrix/media/r0/thumbnail/{mxc[6:]}"
+            return "https://mau.chat/img/368bd6.2349bd1.png"
+        return (f"https://api.mau.chat/_matrix/media/r0/thumbnail/{mxc[6:]}"
                 f"?width=16&height=16&method=crop")
 
     async def get_widget(self, request: web.Request) -> web.Response:
